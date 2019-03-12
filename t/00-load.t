@@ -2,15 +2,19 @@
 use 5.006;
 use strict;
 use warnings;
+use Test::Builder;
 use Test::More;
 
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'Class::Tiny::ConstrainedAccessor' ) || print "Bail out!\n";
+    use_ok( 'Class::Tiny::ConstrainedAccessor' );
 }
 
-diag( "Testing Class::Tiny::ConstrainedAccessor $Class::Tiny::ConstrainedAccessor::VERSION, Perl $], $^X" );
-
-# TODO replace the use_ok lines with the setup used in
+BAIL_OUT("Further tests rely on all modules compiling.")
+    unless Test::Builder->new->is_passing;
+# Thanks for this way of using BAIL_OUT to
 # https://metacpan.org/source/TOBYINK/Type-Tiny-1.004004/t/01-compile.t
+# (licensed the same as Perl 5 itself).
+
+diag( "Testing Class::Tiny::ConstrainedAccessor $Class::Tiny::ConstrainedAccessor::VERSION, Perl $], $^X" );

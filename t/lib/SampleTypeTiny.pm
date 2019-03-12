@@ -1,5 +1,5 @@
 #!perl
-package SampleClass;
+package SampleTypeTiny;
 use Scalar::Util qw(looks_like_number);
 
 use Type::Tiny;
@@ -26,3 +26,5 @@ use Class::Tiny qw(medint regular), {
     med_with_default => 12,
     lazy_default => sub { '1337' },
 };
+
+1;

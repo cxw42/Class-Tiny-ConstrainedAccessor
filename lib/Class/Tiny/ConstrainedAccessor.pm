@@ -65,7 +65,7 @@ sub import {
     foreach my $k (keys(%constraints)) {
         my $constraint = $constraints{$k};
 
-        print Dumper($constraint);
+        #print Dumper($constraint);
         # Make sure it's a type of constraint we can use
         unless(ref $constraint) {
             die "Cannot use undefined constraint $k in package $target";

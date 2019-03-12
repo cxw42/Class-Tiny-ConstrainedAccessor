@@ -1,5 +1,6 @@
 Changes
 lib/Class/Tiny/ConstrainedAccessor.pm
+LICENSE
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
@@ -7,9 +8,12 @@ README
 README.md
 support/readme.pl
 t/00-load.t
-t/01-sampleclass.t
-t/lib/SampleClass.pm
-t/manifest.t
-t/pod-coverage.t
-t/pod.t
+t/01-type-tiny.t
+t/02-moosex-types.t
+t/lib/SampleClassTests.pm
+t/lib/SampleMooseXTypes.pm
+t/lib/SampleTypeTiny.pm
 xt/boilerplate.t
+xt/manifest.t
+xt/pod-coverage.t
+xt/pod.t

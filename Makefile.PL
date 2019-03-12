@@ -157,6 +157,9 @@ my %opts = (
     },
     TEST_REQUIRES => {
         'lib::relative' => '0.002',
+        'MooseX::Types' => '0',
+        'MooseX::Types::Moose' => '0',
+        'Test::Builder' => '0',
         'Test::Fatal' => '0',
         'Test::More' => '0',
         'Type::Tiny' => '0',
