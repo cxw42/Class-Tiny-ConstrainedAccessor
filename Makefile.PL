@@ -107,10 +107,10 @@ testhere:   # Run the tests from lib rather than blib
 # Update README.  However, ignore errors so that CPAN users of the module
 # won't see failures due to issues with readme.pl.
 README.md: @{[$VERSION_FROM]} Makefile.PL $make_readme_md
-\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f md #--appveyor cxw42/class-tiny-constrainedaccessor
+\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f md --appveyor cxw42/class-tiny-constrainedaccessor
 
 README: @{[$VERSION_FROM]} Makefile.PL $make_readme_md
-\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f text #--appveyor cxw42/class-tiny-constrainedaccessor
+\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f text --appveyor cxw42/class-tiny-constrainedaccessor
 
 all :: README.md README
 dist :: README.md README

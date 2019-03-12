@@ -7,7 +7,7 @@ use Class::Tiny;
 
 #use Data::Dumper;   #DEBUG
 
-our $VERSION = '0.000001';  # TRIAL
+our $VERSION = '0.000002'; # TRIAL
 
 # Docs {{{1
 

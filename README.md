@@ -1,5 +1,7 @@
 # Class::Tiny::ConstrainedAccessor - Generate Class::Tiny accessors that apply type constraints
 
+[![Appveyor Badge](https://ci.appveyor.com/api/projects/status/github/cxw42/class-tiny-constrainedaccessor?svg=true)](https://ci.appveyor.com/project/cxw42/class-tiny-constrainedaccessor)
+
 
 
 [Class::Tiny](https://metacpan.org/pod/Class::Tiny) uses custom accessors if they are defined before the
