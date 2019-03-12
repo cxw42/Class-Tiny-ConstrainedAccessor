@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Class::Tiny;
 
-use Data::Dumper;   #DEBUG
+#use Data::Dumper;   #DEBUG
 
 our $VERSION = '0.000001';  # TRIAL
 
@@ -67,10 +67,8 @@ sub import {
 
         #print Dumper($constraint);
         # Make sure it's a type of constraint we can use
-        unless(ref $constraint) {
-            die "Cannot use undefined constraint $k in package $target";
-            next;
-        }
+        die "Cannot use undefined or scalar constraint $k in package $target"
+            unless(ref $constraint);
 
         # Type::Tiny and Moose::Meta::TypeConstraint
         my $av = eval { $constraint->can('assert_valid') };
@@ -93,12 +91,14 @@ sub import {
             else {
                 my $defaults_ =
                     Class::Tiny->get_all_attribute_defaults_for( ref $self_ );
-                #print "Defaults for $k in " . ref($self_) . ":\n"; # DEBUG
-                #print Dumper($defaults_);  # DEBUG
+                #print "# Defaults for $k in " . ref($self_) . ":\n"; # DEBUG
+                #use Data::Dumper; my $x = Dumper($defaults_); $x =~ s/^/# /gm; print $x;  # DEBUG
                 my $def_ = $defaults_->{$k};
                 if(ref $def_ eq 'CODE') {
+                    #print "# code default\n";
                     return $self_->{$k} = $def_->();
                 } else {
+                    #print "# non-code default\n";
                     return $self_->{$k} = $def_;
                 }
             }

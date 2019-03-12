@@ -25,6 +25,7 @@ BEGIN {
 use Class::Tiny::ConstrainedAccessor
     medint => MediumInteger,
     med_with_default => MediumInteger,
+    lazy_default => MediumInteger,
 ;
 
 BEGIN { undef @ISA; }   # So we're not a Moose class
@@ -33,7 +34,7 @@ BEGIN { undef @ISA; }   # So we're not a Moose class
 # After using ConstrainedAccessor, we use this
 use Class::Tiny qw(medint regular), {
     med_with_default => 12,
-    lazy_default => sub { '1337' },
+    lazy_default => sub { 19 },
 };
 
 1;

@@ -27,9 +27,16 @@ sub run {
     die "Need a class" unless ref $dut;
 
     cmp_ok($dut->medint, '==', 15, 'medint stored OK by ctor');
-    cmp_ok($dut->med_with_default, '==', 12, 'med_with_default has default value');
     is($dut->regular, 'hello', 'regular stored OK by ctor');
-    is($dut->lazy_default, '1337', 'lazy has default value');
+
+    if(@_) {    # Check the non-lazy default first
+        cmp_ok($dut->med_with_default, '==', 12, 'med_with_default has default value');
+        cmp_ok($dut->lazy_default, '==', '19', 'lazy has default value');
+        return;
+    } else {    # Check the lazy default first
+        cmp_ok($dut->lazy_default, '==', '19', 'lazy has default value');
+        cmp_ok($dut->med_with_default, '==', 12, 'med_with_default has default value');
+    }
 
     # The non-constrained accessor accepts everything
     is(

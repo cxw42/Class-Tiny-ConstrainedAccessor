@@ -104,11 +104,13 @@ authortest:
 testhere:   # Run the tests from lib rather than blib
 \tprove -lj4
 
+# Update README.  However, ignore errors so that CPAN users of the module
+# won't see failures due to issues with readme.pl.
 README.md: @{[$VERSION_FROM]} Makefile.PL $make_readme_md
-\t"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f md #--appveyor cxw42/class-tiny-constrainedaccessor
+\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f md #--appveyor cxw42/class-tiny-constrainedaccessor
 
 README: @{[$VERSION_FROM]} Makefile.PL $make_readme_md
-\t"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f text #--appveyor cxw42/class-tiny-constrainedaccessor
+\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f text #--appveyor cxw42/class-tiny-constrainedaccessor
 
 all :: README.md README
 dist :: README.md README
@@ -147,7 +149,9 @@ my %opts = (
     ABSTRACT_FROM    => $VERSION_FROM,
     LICENSE          => 'apache_2_0',
     PL_FILES         => {},
-    MIN_PERL_VERSION => '5.006',
+    MIN_PERL_VERSION => '5.014',
+        # TODO pull back to 5.006 --- support/readme.pl is what requires
+        # 5.014.
 
     # In the following, if a specific version is listed, but no explanation
     # is given, that means we want that version for bugfixes it includes.
@@ -155,12 +159,17 @@ my %opts = (
         'Config' => '0',
         'ExtUtils::MakeMaker' => '0',
     },
+    BUILD_REQUIRES => {
+        'Getopt::Long' => '2.50',
+        'Path::Class' => '0',
+    },
     TEST_REQUIRES => {
         'lib::relative' => '0.002',
         'MooseX::Types' => '0',
         'MooseX::Types::Moose' => '0',
         'Test::Builder' => '0',
-        'Test::Fatal' => '0',
+        'Test::Exception' => '0',
+        'Test::Fatal' => '0',       # TODO replace uses of this with T~::Ex~
         'Test::More' => '0',
         'Type::Tiny' => '0',
     },
@@ -169,6 +178,33 @@ my %opts = (
         'strict' => '0',
         'warnings' => '0',
     },
+
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+
+        resources => {
+            bugtracker => {
+                web  => 'https://github.com/cxw42/Class-Tiny-ConstrainedAccessor/issues',
+            },
+            repository => {
+                type => 'git',
+                web  => 'https://github.com/cxw42/Class-Tiny-ConstrainedAccessor.git',
+                web  => 'https://github.com/cxw42/Class-Tiny-ConstrainedAccessor',
+            },
+        },
+
+        prereqs => {
+            develop => {
+                requires => {
+                    'App::RewriteVersion' => '0',   # for perl-bump-version
+                    'Module::Metadata' => '1.000016',
+                },
+            },
+        },
+
+        @provides,
+
+    }, #META_MERGE
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Class-Tiny-ConstrainedAccessor-*' },
 );

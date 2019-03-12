@@ -1,6 +1,8 @@
-# Miscellaneous
+# Files used only for development
 ^\.editorconfig
 ^\.[^\\\/]*\.yml
+
+# Miscellaneous
 \bfoo\b.*
 t/.*\.out$
 lua$
