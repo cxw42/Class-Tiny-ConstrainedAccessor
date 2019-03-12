@@ -1,85 +1,81 @@
-Class-Tiny-ConstrainedAccessor
+NAME
+    Class::Tiny::ConstrainedAccessor - Generate Class::Tiny accessors that
+    apply type constraints
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+    Class::Tiny uses custom accessors if they are defined before the "use
+    Class::Tiny" statement in a package.  This module creates custom accessors
+    that behave as standard "Class::Tiny" accessors except that they apply
+    type constraints ("isa" relationships).  Type constraints can come from
+    TODO (e.g., Type::Tiny).
 
-A README file is required for CPAN modules since CPAN extracts the README
-file from a module distribution so that people browsing the archive
-can use it to get an idea of the module's uses. It is usually a good idea
-to provide version information here so that people can decide whether
-fixes for the module are worth downloading.
+    Example of a class using this package:
 
+        package SampleClass;
+        use Scalar::Util qw(looks_like_number);
 
-INSTALLATION
+        use Type::Tiny;
 
-To install this module, run the following commands:
+        my $MediumInteger = Type::Tiny->new(
+            name => 'MediumInteger',
+            constraint => sub { looks_like_number($_) and $_ >= 10 and $_ < 20 }
+        );
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+        use Class::Tiny::ConstrainedAccessor {
+            medint => $MediumInteger,           # create accessor sub medint()
+            med_with_default => $MediumInteger,
+        };
 
-SUPPORT AND DOCUMENTATION
+        # After using ConstrainedAccessor
+        use Class::Tiny qw(medint regular), {
+            med_with_default => 12,
+        };
 
-After installing, you can find documentation for this module with the
-perldoc command.
+SUBROUTINES
+  import
+    Creates the accessors you have requested.
 
-    perldoc Class::Tiny::ConstrainedAccessor
+AUTHOR
+    Christopher White, "<cxwembedded at gmail.com>"
 
-You can also look for information at:
+BUGS
+    Please report any bugs or feature requests through the GitHub Issues
+    interface at <https://github.com/cxw42/Class-Tiny-ConstrainedAccessor>.  I
+    will be notified, and then you'll automatically be notified of progress on
+    your bug as I make changes.
 
-    RT, CPAN's request tracker (report bugs here)
-        https://rt.cpan.org/NoAuth/Bugs.html?Dist=Class-Tiny-ConstrainedAccessor
+SUPPORT
+SUPPORT
+    You can find documentation for this module with the perldoc command.
 
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Class-Tiny-ConstrainedAccessor
+        perldoc Class::Tiny::ConstrainedAccessor
 
-    CPAN Ratings
-        https://cpanratings.perl.org/d/Class-Tiny-ConstrainedAccessor
+    You can also look for information at:
 
-    Search CPAN
-        https://metacpan.org/release/Class-Tiny-ConstrainedAccessor
+    *   GitHub (report bugs here)
 
+        <https://github.com/cxw42/Class-Tiny-ConstrainedAccessor>
+
+    *   RT: CPAN's request tracker
+
+        <https://rt.cpan.org/NoAuth/Bugs.html?Dist=Class-Tiny-ConstrainedAcces
+        sor>
+
+    *   Search CPAN
+
+        <https://metacpan.org/release/Class-Tiny-ConstrainedAccessor>
 
 LICENSE AND COPYRIGHT
+    Copyright 2019 Christopher White.
 
-Copyright (C) 2019 Christopher White
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the the Apache License (2.0). You may obtain a copy of
+    the full license at:
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
+    <https://www.apache.org/licenses/LICENSE-2.0>
 
-L<http://www.perlfoundation.org/artistic_license_2_0>
-
-Any use, modification, and distribution of the Standard or Modified
-Versions is governed by this Artistic License. By using, modifying or
-distributing the Package, you accept this license. Do not use, modify,
-or distribute the Package, if you do not accept this license.
-
-If your Modified Version has been derived from a Modified Version made
-by someone other than you, you are nevertheless required to ensure that
-your Modified Version complies with the requirements of this license.
-
-This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
-
-This license includes the non-exclusive, worldwide, free-of-charge
-patent license to make, have made, use, offer to sell, sell, import and
-otherwise transfer the Package with respect to any patent claims
-licensable by the Copyright Holder that are necessarily infringed by the
-Package. If you institute patent litigation (including a cross-claim or
-counterclaim) against any party alleging that the Package constitutes
-direct or contributory patent infringement, then this Artistic License
-to you shall terminate on the date that such litigation is filed.
-
-Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
-AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
-YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
-CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
-CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
-EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
+    under the License.
 
