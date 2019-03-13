@@ -7,15 +7,17 @@ use Test::Fatal;
 
 use lib::relative 'lib';
 use SampleTypeTiny;
-use SampleClassTests;
+use Tests;
 
-SampleClassTests::run(
+Tests::test_accessors(
     SampleTypeTiny->new(medint=>15, regular=>'hello')
 );
 
-SampleClassTests::run(
+Tests::test_accessors(
     SampleTypeTiny->new(medint=>15, regular=>'hello'),
     1
 );
+
+Tests::test_construction 'SampleTypeTiny';
 
 done_testing();

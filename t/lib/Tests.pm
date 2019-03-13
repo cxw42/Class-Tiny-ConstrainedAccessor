@@ -2,27 +2,39 @@
 
 =head1 NAME
 
-SampleClassTests - run tests on a given class
+Tests - run Class::Data::ConstrainedAccessor tests on a given class
+
+=head1 SYNOPSIS
+
+These are common test routines that can be used with various type systems.
+The class under test must have the following attributes:
+
+    regular             Unrestricted member, default undef
+    medint              Constrained to numbers 10..19, no default
+    med_with_default    Constrained as medint; default 12
+    lazy_default        Constrained as medint; default 19
 
 =cut
 
-package SampleClassTests;
+package Tests;
 
 use 5.006;
 use strict;
 use warnings;
 use Test::More;
+use Test::Exception;
 use Test::Fatal;
 
 =head1 FUNCTIONS
 
-=head2 run
+=head2 test_accessors
 
-Run the tests.  Call as C<run $instance_of_class_to_test>.
+Test accessor calls on a newly-constructed object.
+Call as C<Tests::test_accessors $instance_of_class_to_test>.
 
 =cut
 
-sub run {
+sub test_accessors {
     my $dut = shift;
     die "Need a class" unless ref $dut;
 
@@ -83,6 +95,36 @@ sub run {
         qr/./,
         'med_with_default rejects ' . ($_ // 'undef')
     ) foreach ('some string', undef, \*STDOUT);
-} #run()
+} #test_accessors()
+
+=head2 test_construction
+
+Tests constructing an object using given parameters.  Usage:
+
+    Tests::test_construction 'ClassUnderTest', sub { ClassUnderTest->new(@_) };
+
+The parameters are (required) the name of a class, and (optional) a coderef
+that returns a new instance created with the given parameters (default C<new()>
+in the specified class).  The coderef is for flexibility.
+
+=cut
+
+sub test_construction {
+    my $class = shift;
+    die "Need a class name" unless $class;
+    my $factory = shift // sub { $class->new(@_) };
+
+    # Sanity check: parameters OK
+    my $obj = $factory->(regular=>1, medint=>10);
+    isa_ok($obj, $class);
+
+    TODO: {
+        local $TODO = "#4 not yet implemented";
+        dies_ok { $factory->(regular=>1, medint=>$_) }
+            "$class medint=>$_ fails constraint"
+            foreach (9, 20, 'oops', '', \*STDOUT);
+    }
+
+} #test_construction
 
 1;

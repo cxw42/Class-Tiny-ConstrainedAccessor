@@ -154,7 +154,7 @@ L<https://metacpan.org/release/Class-Tiny-ConstrainedAccessor>
 
 =back
 
-=head1 LICENSE AND COPYRIGHT
+=head1 LICENSE
 
 Copyright 2019 Christopher White.
 

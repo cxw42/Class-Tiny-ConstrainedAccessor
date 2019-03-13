@@ -158,6 +158,7 @@ my %opts = (
     CONFIGURE_REQUIRES => {
         'Config' => '0',
         'ExtUtils::MakeMaker' => '0',
+        'File::Spec' => '0',
     },
     BUILD_REQUIRES => {
         'Getopt::Long' => '2.50',

@@ -7,15 +7,17 @@ use Test::Fatal;
 
 use lib::relative 'lib';
 use SampleMooseXTypes;
-use SampleClassTests;
+use Tests;
 
-SampleClassTests::run(
+Tests::test_accessors(
     SampleMooseXTypes->new(medint=>15, regular=>'hello')
 );
 
-SampleClassTests::run(
+Tests::test_accessors(
     SampleMooseXTypes->new(medint=>15, regular=>'hello'),
     1
 );
+
+Tests::test_construction 'SampleMooseXTypes';
 
 done_testing();
