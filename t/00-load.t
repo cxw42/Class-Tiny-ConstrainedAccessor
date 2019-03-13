@@ -1,15 +1,12 @@
 #!perl
 use 5.006;
-use strict;
-use warnings;
+use lib::relative 'lib';
+use Kit;
 use Test::Builder;
-use Test::More;
 
 plan tests => 1;
 
-BEGIN {
-    use_ok( 'Class::Tiny::ConstrainedAccessor' );
-}
+use_ok( 'Class::Tiny::ConstrainedAccessor' );
 
 BAIL_OUT("Further tests rely on all modules compiling.")
     unless Test::Builder->new->is_passing;

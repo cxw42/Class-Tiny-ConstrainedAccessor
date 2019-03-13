@@ -1,13 +1,8 @@
 #!perl
-package SomeClassOrOther;
-
 use 5.006;
-use strict;
-use warnings;
-use Test::More;
-use Test::Exception;
-
 use lib::relative 'lib';
+use Kit;
+
 require Class::Tiny::ConstrainedAccessor;
 
 # A dummy placeholder constraint

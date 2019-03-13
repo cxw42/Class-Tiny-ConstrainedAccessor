@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-Tests - run Class::Data::ConstrainedAccessor tests on a given class
+Tests - run Class::Tiny::ConstrainedAccessor tests on a given class
 
 =head1 SYNOPSIS
 

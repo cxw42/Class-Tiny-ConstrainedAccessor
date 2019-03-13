@@ -84,23 +84,21 @@ sub import {
             if (@_) {
                 $av->($constraint, $_[0]);      # Validate the arg or die
                 return $self_->{$k} = $_[0];
-            }
-            elsif ( exists $self_->{$k} ) {
+
+            } elsif ( exists $self_->{$k} ) {
                 return $self_->{$k};
-            }
-            else {
+
+            } else {
                 my $defaults_ =
                     Class::Tiny->get_all_attribute_defaults_for( ref $self_ );
                 #print "# Defaults for $k in " . ref($self_) . ":\n"; # DEBUG
                 #use Data::Dumper; my $x = Dumper($defaults_); $x =~ s/^/# /gm; print $x;  # DEBUG
+
                 my $def_ = $defaults_->{$k};
-                if(ref $def_ eq 'CODE') {
-                    #print "# code default\n";
-                    return $self_->{$k} = $def_->();
-                } else {
-                    #print "# non-code default\n";
-                    return $self_->{$k} = $def_;
-                }
+                $def_ = $def_->() if ref $def_ eq 'CODE';
+
+                $av->($constraint, $def_);      # Validate the default or die
+                return $self_->{$k} = $def_;
             }
         }; #accessor()
 
@@ -112,7 +110,6 @@ sub import {
         }
 
     } #foreach constraint
-    print "End of import()\n";
 } #import()
 
 1; # End of Class::Tiny::ConstrainedAccessor

@@ -11,9 +11,12 @@ t/00-load.t
 t/01-type-tiny.t
 t/02-moosex-types.t
 t/03-invalid-invocation.t
-t/lib/SampleClassTests.pm
+t/04-bad-defaults-type-tiny.t
+t/lib/Kit.pm
 t/lib/SampleMooseXTypes.pm
 t/lib/SampleTypeTiny.pm
+t/lib/SampleTypeTinyBadDefaults.pm
+t/lib/Tests.pm
 xt/boilerplate.t
 xt/manifest.t
 xt/pod-coverage.t

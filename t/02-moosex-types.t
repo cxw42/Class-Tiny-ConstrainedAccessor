@@ -1,13 +1,10 @@
 #!perl
 use 5.006;
-use strict;
-use warnings;
-use Test::More;
-use Test::Fatal;
-
 use lib::relative 'lib';
-use SampleMooseXTypes;
+use Kit;
 use Tests;
+
+use SampleMooseXTypes;
 
 Tests::test_accessors(
     SampleMooseXTypes->new(medint=>15, regular=>'hello')

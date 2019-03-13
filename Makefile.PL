@@ -165,6 +165,7 @@ my %opts = (
         'Path::Class' => '0',
     },
     TEST_REQUIRES => {
+        'Import::Into' => '0',
         'lib::relative' => '0.002',
         'MooseX::Types' => '0',
         'MooseX::Types::Moose' => '0',
