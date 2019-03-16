@@ -112,6 +112,32 @@ sub import {
     } #foreach constraint
 } #import()
 
+# _get_constraint_sub: Get the subroutine for a constraint.
+sub _get_constraint_sub {
+    my ($type) = @_;
+    my $compiled;
+    if ($type->can('compiled_check')) { # Type::Tiny
+        $compiled = $type->compiled_check;
+
+    } elsif (my $method = $type->can('inline_check')||$type->can('_inline_check')) { # Specio, Moose
+        $compiled = eval { eval sprintf 'sub { my $value = shift; %s }', $type->$method('$value') };
+        # above will fail if type cannot be inlined, so next block isn't `elsif`
+    }
+
+    if (!$compiled) {
+        if ($type->can('check')) { # Specio, Moose, Mouse
+            $compiled = sub { $type->check(@_) };
+
+        } elsif (ref($type) eq 'CODE') { # MooX::Types
+            $compiled = sub { eval { $type->(@_); 1 } };
+
+        } else {
+            die "Dunno how to use this type";
+        }
+    }
+    ...
+} #_get_constraint_sub()
+
 1; # End of Class::Tiny::ConstrainedAccessor
 # Rest of the docs {{{1
 __END__
