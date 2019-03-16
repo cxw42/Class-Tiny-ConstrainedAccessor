@@ -167,12 +167,14 @@ my %opts = (
     TEST_REQUIRES => {
         'Import::Into' => '0',
         'lib::relative' => '0.002',
-        'MooseX::Types' => '0',
-        'MooseX::Types::Moose' => '0',
         'Test::Builder' => '0',
         'Test::Exception' => '0',
         'Test::Fatal' => '0',       # TODO replace uses of this with T~::Ex~
         'Test::More' => '0',
+
+        # Type systems we always check.  Others are below (test recommends).
+        'MooseX::Types' => '0',
+        'MooseX::Types::Moose' => '0',
         'Type::Tiny' => '0',
     },
     PREREQ_PM => {
@@ -200,6 +202,15 @@ my %opts = (
                 requires => {
                     'App::RewriteVersion' => '0',   # for perl-bump-version
                     'Module::Metadata' => '1.000016',
+                },
+            },
+
+            test => {
+                recommends => {
+                    # Type systems we will eventually check if they're loaded
+                    'MooX::Types::MooseLike' => '0',
+                    'MouseX::Types' => '0',
+                    'Specio' => '0',
                 },
             },
         },
