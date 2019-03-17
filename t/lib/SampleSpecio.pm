@@ -5,12 +5,12 @@ use Scalar::Util qw(looks_like_number);
 
 use Type::Tiny;
 
-use SpecioTypeLib qw(MediumInteger);
+use SpecioTypeLib;
 
 use Class::Tiny::ConstrainedAccessor
-    medint => MediumInteger,
-    med_with_default => MediumInteger,
-    lazy_default => MediumInteger,
+    medint => t('MediumInteger'),
+    med_with_default => t('MediumInteger'),
+    lazy_default => t('MediumInteger'),
 ;
 
 BEGIN { undef @ISA; }   # So we're not a Mouse class

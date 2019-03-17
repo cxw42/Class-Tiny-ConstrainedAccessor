@@ -65,14 +65,9 @@ sub import {
     foreach my $k (keys(%constraints)) {
         my $constraint = $constraints{$k};
 
-        #print Dumper($constraint);
-        # Make sure it's a type of constraint we can use
-        die "Cannot use undefined or scalar constraint $k in package $target"
-            unless(ref $constraint);
-
-        # Type::Tiny and Moose::Meta::TypeConstraint
-        my $av = eval { $constraint->can('assert_valid') };
-        die "I don't know how to use the constraint object for $k" unless $av;
+        #use Data::Dumper; print Dumper({$k => $constraint});
+        my ($checker, $get_message) =
+                _get_constraint_sub($constraint); # dies on failure
 
         # The accessor --- modified from the Class::Tiny docs based on
         # the source for C::T::__gen_accessor() and C::T::__gen_sub_body().
@@ -82,7 +77,7 @@ sub import {
             #print "Running accessor for $k\n"; # DEBUG
             my $self_ = shift;
             if (@_) {
-                $av->($constraint, $_[0]);      # Validate the arg or die
+                $checker->($_[0]) or die $get_message->($_[0]);
                 return $self_->{$k} = $_[0];
 
             } elsif ( exists $self_->{$k} ) {
@@ -97,7 +92,7 @@ sub import {
                 my $def_ = $defaults_->{$k};
                 $def_ = $def_->() if ref $def_ eq 'CODE';
 
-                $av->($constraint, $def_);      # Validate the default or die
+                $checker->($def_) or die $get_message->($def_);
                 return $self_->{$k} = $def_;
             }
         }; #accessor()
@@ -113,29 +108,52 @@ sub import {
 } #import()
 
 # _get_constraint_sub: Get the subroutine for a constraint.
+# Returns two coderefs: checker and get_message.
 sub _get_constraint_sub {
     my ($type) = @_;
-    my $compiled;
-    if ($type->can('compiled_check')) { # Type::Tiny
-        $compiled = $type->compiled_check;
+    my ($checker, $get_message);
 
-    } elsif (my $method = $type->can('inline_check')||$type->can('_inline_check')) { # Specio, Moose
-        $compiled = eval { eval sprintf 'sub { my $value = shift; %s }', $type->$method('$value') };
-        # above will fail if type cannot be inlined, so next block isn't `elsif`
-    }
+    DONE: {
 
-    if (!$compiled) {
-        if ($type->can('check')) { # Specio, Moose, Mouse
-            $compiled = sub { $type->check(@_) };
-
-        } elsif (ref($type) eq 'CODE') { # MooX::Types
-            $compiled = sub { eval { $type->(@_); 1 } };
-
-        } else {
-            die "Dunno how to use this type";
+        if ( eval { $type->can('compiled_check') }) { # Type::Tiny
+            #print "Type::Tiny\n";
+            $checker = $type->compiled_check();
+            $get_message = sub { $type->get_message($_[0]) };
+            last DONE;
         }
-    }
-    ...
+
+        if (my $method = eval { $type->can('inline_check') || $type->can('_inline_check') }) { # Moose
+            #print "Moose\n";
+            $checker = eval { eval sprintf 'sub { my $value = shift; %s }', $type->$method('$value') };
+                # Note: will fail if type cannot be inlined
+            $get_message = sub { 'Constraint failed' };     # TODO
+            last DONE if $checker;
+        }
+
+        if (eval { $type->can('check') } ) { # Moose, Mouse
+            #print("Moose, Mouse\n");
+            $checker = sub { $type->check(@_) };
+            $get_message = sub { 'Constraint failed' };     # TODO
+            last DONE;
+        }
+
+        if (ref($type) eq 'CODE') { # MooX::Types
+            #print "Moo";
+            $checker = sub { eval { $type->(@_); 1 } };
+            $get_message = sub { 'Constraint failed' };     # TODO
+            last DONE;
+        }
+
+        if(eval { $type->can('value_is_valid') }) { # Specio::Constraint::Simple
+            print("Specio");
+            $checker = sub { $type->value_is_valid(@_) };
+            $get_message = sub { 'Value is not a ' . $type->description };
+            last DONE;
+        }
+
+    } #DONE
+    die "Dunno how to use this type" unless $checker and $get_message;
+    return ($checker, $get_message);
 } #_get_constraint_sub()
 
 1; # End of Class::Tiny::ConstrainedAccessor

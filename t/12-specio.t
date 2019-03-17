@@ -4,6 +4,11 @@ use lib::relative 'lib';
 use Kit;
 use Tests;
 
+BEGIN {
+    plan skip_all => 'Could not load Specio' unless
+        eval { require Specio; 1; };
+}
+
 use SampleSpecio;
 
 Tests::test_accessors(

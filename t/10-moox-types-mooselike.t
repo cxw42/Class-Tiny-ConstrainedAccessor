@@ -4,9 +4,10 @@ use lib::relative 'lib';
 use Kit;
 use Tests;
 
-my $could_load;
-eval { require MooX::Types::MooseLike; $could_load = 1; };
-plan skip_all => 'Could not load MooX::Types::MooseLike' unless $could_load;
+BEGIN {
+    plan skip_all => 'Could not load MooX::Types::MooseLike' unless
+        eval { require MooX::Types::MooseLike; 1; };
+}
 
 use SampleMooXTypesMooseLike;
 

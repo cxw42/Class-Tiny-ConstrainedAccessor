@@ -4,6 +4,11 @@ use lib::relative 'lib';
 use Kit;
 use Tests;
 
+BEGIN {
+    plan skip_all => 'Could not load MouseX::Types' unless
+        eval { require MouseX::Types; 1; };
+}
+
 use SampleMouseXTypes;
 
 Tests::test_accessors(
