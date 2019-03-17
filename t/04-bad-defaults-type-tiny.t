@@ -1,7 +1,7 @@
 #!perl
 use 5.006;
-use lib::relative 'lib';
-use Kit;
+use lib::relative '.';
+use MY::Kit;
 
 use SampleTypeTinyBadDefaults;
 

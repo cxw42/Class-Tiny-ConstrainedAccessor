@@ -1,20 +1,20 @@
 #!perl
 use 5.006;
-use lib::relative 'lib';
-use Kit;
-use Tests;
+use lib::relative '.';
+use MY::Kit;
+use MY::Tests;
 
-use SampleMooseXTypes;
+use MY::Class::MooseXTypes;
 
 Tests::test_accessors(
-    SampleMooseXTypes->new(medint=>15, regular=>'hello')
+    MY::Class::MooseXTypes->new(medint=>15, regular=>'hello')
 );
 
 Tests::test_accessors(
-    SampleMooseXTypes->new(medint=>15, regular=>'hello'),
+    MY::Class::MooseXTypes->new(medint=>15, regular=>'hello'),
     1
 );
 
-Tests::test_construction 'SampleMooseXTypes';
+Tests::test_construction 'MY::Class::MooseXTypes';
 
 done_testing();

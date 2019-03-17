@@ -1,25 +1,25 @@
 #!perl
 use 5.006;
-use lib::relative 'lib';
-use Kit;
-use Tests;
+use lib::relative '.';
+use MY::Kit;
+use MY::Tests;
 
 BEGIN {
     plan skip_all => 'Could not load MouseX::Types' unless
         eval { require MouseX::Types; 1; };
 }
 
-use SampleMouseXTypes;
+use MY::Class::MouseXTypes;
 
 Tests::test_accessors(
-    SampleMouseXTypes->new(medint=>15, regular=>'hello')
+    MY::Class::MouseXTypes->new(medint=>15, regular=>'hello')
 );
 
 Tests::test_accessors(
-    SampleMouseXTypes->new(medint=>15, regular=>'hello'),
+    MY::Class::MouseXTypes->new(medint=>15, regular=>'hello'),
     1
 );
 
-Tests::test_construction 'SampleMouseXTypes';
+Tests::test_construction 'MY::Class::MouseXTypes';
 
 done_testing();
