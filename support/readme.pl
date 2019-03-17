@@ -71,8 +71,8 @@ while(my $line = <$fh>) {
     next if $line =~ /SYNOPSIS/;    # Don't need this header.
 
     # Skip the internals
-    $output .= $line if $line =~ /SUPPORT/;
-    next if ($line =~ /VARIABLES/)..($line =~ /SUPPORT/);
+    $output .= $line if $line =~ /AUTHOR/;
+    next if ($line =~ /SUBROUTINES/)..($line =~ /AUTHOR/);
 
     $line =~ s{https://metacpan.org/pod/Data::Hopen::Conventions}{https://metacpan.org/pod/release/CXW/Build-Hopen-0.000006-TRIAL/lib/Build/Hopen/Conventions.pod} if $force_conventions;
 

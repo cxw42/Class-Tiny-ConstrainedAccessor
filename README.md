@@ -32,12 +32,6 @@ Example of a class using this package:
         med_with_default => 12,
     };
 
-# SUBROUTINES
-
-## import
-
-Creates the accessors you have requested.
-
 # AUTHOR
 
 Christopher White, `<cxwembedded at gmail.com>`
@@ -49,7 +43,6 @@ at [https://github.com/cxw42/Class-Tiny-ConstrainedAccessor](https://github.com/
 notified, and then you'll automatically be notified of progress on your bug as
 I make changes.
 
-# SUPPORT
 # SUPPORT
 
 You can find documentation for this module with the perldoc command.
@@ -70,7 +63,7 @@ You can also look for information at:
 
     [https://metacpan.org/release/Class-Tiny-ConstrainedAccessor](https://metacpan.org/release/Class-Tiny-ConstrainedAccessor)
 
-# LICENSE AND COPYRIGHT
+# LICENSE
 
 Copyright 2019 Christopher White.
 

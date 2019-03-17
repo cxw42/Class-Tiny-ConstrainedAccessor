@@ -97,23 +97,12 @@ sub get_perl_filename {
         # installed.
 
         my $make_readme_md = File::Spec->catfile(qw(support readme.pl));
-        return <<EOT;
+        my $text = <<EOT;
 authortest:
 \tRELEASE_TESTING=1 prove -lvj4 xt
 
 testhere:   # Run the tests from lib rather than blib
 \tprove -lj4
-
-# Update README.  However, ignore errors so that CPAN users of the module
-# won't see failures due to issues with readme.pl.
-README.md: @{[$VERSION_FROM]} Makefile.PL $make_readme_md
-\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f md --appveyor cxw42/class-tiny-constrainedaccessor
-
-README: @{[$VERSION_FROM]} Makefile.PL $make_readme_md
-\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f text --appveyor cxw42/class-tiny-constrainedaccessor
-
-all :: README.md README
-dist :: README.md README
 
 # Uninstallation: mimic what the normal "uninstall" target does, but actually
 # carry out the actions.
@@ -136,6 +125,24 @@ actually_uninstall_from_vendordirs ::
 
 EOT
 
+        # For 5.014+, and when running in a development environment (repo),
+        # also make the targets to update the README.
+        # (support/readme.pl requires 5.014+.)
+        $text .= <<EOT if -d '.git' and $]>=5.014;
+
+# Update README.  However, ignore errors so that CPAN users of the module
+# won't see failures due to issues with readme.pl.
+README.md: @{[$VERSION_FROM]} Makefile.PL $make_readme_md
+\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f md --appveyor cxw42/class-tiny-constrainedaccessor
+
+README: @{[$VERSION_FROM]} Makefile.PL $make_readme_md
+\t-"$secure_perl_path" "$make_readme_md" -i "\$<" -o "\$@" -f text --appveyor cxw42/class-tiny-constrainedaccessor
+
+all :: README.md README
+dist :: README.md README
+EOT
+
+        return $text;
     } #postamble()
 } #package MY
 
@@ -149,9 +156,7 @@ my %opts = (
     ABSTRACT_FROM    => $VERSION_FROM,
     LICENSE          => 'apache_2_0',
     PL_FILES         => {},
-    MIN_PERL_VERSION => '5.014',
-        # TODO pull back to 5.006 --- support/readme.pl is what requires
-        # 5.014.
+    MIN_PERL_VERSION => '5.006',
 
     # In the following, if a specific version is listed, but no explanation
     # is given, that means we want that version for bugfixes it includes.
@@ -213,7 +218,7 @@ my %opts = (
 
             test => {
                 recommends => {
-                    # Type systems we will eventually check if they're loaded
+                    # Type systems we check, if they're installed.
                     'MooX::Types::MooseLike' => '0',
                     'MouseX::Types' => '0',
                     'Specio' => '0',
