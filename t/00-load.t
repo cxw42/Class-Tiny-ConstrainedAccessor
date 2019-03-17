@@ -1,5 +1,7 @@
 #!perl
 use 5.006;
+use strict;
+use warnings;
 use lib::relative '.';
 use MY::Kit;
 use Test::Builder;

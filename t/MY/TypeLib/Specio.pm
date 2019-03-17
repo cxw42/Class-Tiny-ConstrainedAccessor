@@ -1,7 +1,7 @@
 #!perl
 # Specio type library.
 
-package SpecioTypeLib;
+package MY::TypeLib::Specio;
 use 5.006;
 use strict;
 use warnings;
@@ -20,7 +20,7 @@ declare('MediumInteger',
 # Sanity check
 for(t('MediumInteger')) {
     $_->validate_or_die(15);
-    die 'Unexpected validation success' if $_->value_is_valid(0);
+    $_->value_is_valid(0) and die 'Unexpected validation success';
 }
 
 1;

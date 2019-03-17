@@ -1,8 +1,11 @@
 #!perl
 # Mouse type library.  Mouse requires type-library packages to inherit from
+package MY::TypeLib::MouseX;
+use 5.006;
+use strict;
+use warnings;
 # within Mouse, so we put it in a separate package from SampleMouseXTypes.
 
-package MouseXTypeLib;
 use Scalar::Util qw(looks_like_number);
 
 use MouseX::Types -declare => [

@@ -186,6 +186,12 @@ my %opts = (
     META_MERGE => {
         'meta-spec' => { version => 2 },
 
+        x_contributors => [
+            # Use CPAN emails so MetaCPAN will pick them up.
+            'Christopher White <cxw@cpan.org>',
+            'Toby Inkster <tobyink@cpan.org>',
+        ],
+
         resources => {
             bugtracker => {
                 web  => 'https://github.com/cxw42/Class-Tiny-ConstrainedAccessor/issues',

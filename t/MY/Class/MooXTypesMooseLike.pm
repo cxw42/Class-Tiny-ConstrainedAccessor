@@ -1,11 +1,14 @@
 #!perl
-package SampleMooXTypesMooseLike;
+package MY::Class::MooXTypesMooseLike;
+use 5.006;
+use strict;
+use warnings;
 our @ISA;
 use Scalar::Util qw(looks_like_number);
 
 use Type::Tiny;
 
-use MooXTypesMooseLikeTypeLib ':all';
+use MY::TypeLib::MooXTypesMooseLike ':all';
 
 use Class::Tiny::ConstrainedAccessor
     medint => MediumInteger,

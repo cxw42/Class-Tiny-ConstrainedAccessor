@@ -1,13 +1,16 @@
 #!perl
 # MOUSE
-package SampleMouseXTypes;
+package MY::Class::MouseXTypes;
+use 5.006;
+use strict;
+use warnings;
 our @ISA;
 use Scalar::Util qw(looks_like_number);
 
 use Type::Tiny;
 
 use Mouse;
-use MouseXTypeLib qw(MediumInteger);
+use MY::TypeLib::MouseX qw(MediumInteger);
 
 use Class::Tiny::ConstrainedAccessor
     medint => MediumInteger,

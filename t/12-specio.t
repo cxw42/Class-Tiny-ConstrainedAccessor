@@ -1,5 +1,7 @@
 #!perl
 use 5.006;
+use strict;
+use warnings;
 use lib::relative '.';
 use MY::Kit;
 use MY::Tests;
@@ -11,15 +13,15 @@ BEGIN {
 
 use MY::Class::Specio;
 
-Tests::test_accessors(
+MY::Tests::test_accessors(
     MY::Class::Specio->new(medint=>15, regular=>'hello')
 );
 
-Tests::test_accessors(
+MY::Tests::test_accessors(
     MY::Class::Specio->new(medint=>15, regular=>'hello'),
     1
 );
 
-Tests::test_construction 'MY::Class::Specio';
+MY::Tests::test_construction 'MY::Class::Specio';
 
 done_testing();

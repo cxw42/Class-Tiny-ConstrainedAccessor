@@ -1,5 +1,8 @@
 #!perl
-package SampleMooseXTypes;
+package MY::Class::MooseXTypes;
+use 5.006;
+use strict;
+use warnings;
 our @ISA;
 use Scalar::Util qw(looks_like_number);
 

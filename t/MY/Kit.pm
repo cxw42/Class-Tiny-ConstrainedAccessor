@@ -1,6 +1,6 @@
 #!perl
 # Kit: Test kit for Class::Tiny::ConstrainedAccessor
-package Kit;
+package MY::Kit;
 
 use 5.006;
 use strict;

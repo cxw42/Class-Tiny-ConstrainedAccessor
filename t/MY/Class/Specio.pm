@@ -1,11 +1,14 @@
 #!perl
-package SampleSpecio;
+package MY::Class::Specio;
+use 5.006;
+use strict;
+use warnings;
 our @ISA;
 use Scalar::Util qw(looks_like_number);
 
 use Type::Tiny;
 
-use SpecioTypeLib;
+use MY::TypeLib::Specio;
 
 use Class::Tiny::ConstrainedAccessor
     medint => t('MediumInteger'),

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-Tests - run Class::Tiny::ConstrainedAccessor tests on a given class
+MY::Tests - run Class::Tiny::ConstrainedAccessor tests on a given class
 
 =head1 SYNOPSIS
 
@@ -16,7 +16,7 @@ The class under test must have the following attributes:
 
 =cut
 
-package Tests;
+package MY::Tests;
 
 use 5.006;
 use strict;
@@ -36,7 +36,8 @@ Call as C<Tests::test_accessors $instance_of_class_to_test>.
 
 sub test_accessors {
     my $dut = shift;
-    die "Need a class" unless ref $dut;
+    die "Need a class" unless ref $dut or @_;
+    diag ref $dut;
 
     cmp_ok($dut->medint, '==', 15, 'medint stored OK by ctor');
     is($dut->regular, 'hello', 'regular stored OK by ctor');

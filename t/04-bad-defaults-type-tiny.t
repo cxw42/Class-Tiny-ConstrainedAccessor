@@ -1,9 +1,11 @@
 #!perl
 use 5.006;
+use strict;
+use warnings;
 use lib::relative '.';
 use MY::Kit;
 
-use SampleTypeTinyBadDefaults;
+use MY::Class::TypeTinyBadDefaults;
 
 # Tests to run: description => [should die, arguments to use()]
 my %tests = (
@@ -17,7 +19,7 @@ foreach my $test (keys %tests) {
     my $should_die = $tests{$test}->[0];
     shift @{$tests{$test}};
     my $action = sub {
-        my $x = SampleTypeTinyBadDefaults->new(@{$tests{$test}});
+        my $x = MY::Class::TypeTinyBadDefaults->new(@{$tests{$test}});
         diag $x->med_with_default;  # Make sure the accessors run
         diag $x->lazy_default;
     };

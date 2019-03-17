@@ -1,7 +1,11 @@
 #!perl
-package MooXTypesMooseLikeTypeLib;
+package MY::TypeLib::MooXTypesMooseLike;
+use 5.006;
+use strict;
+use warnings;
 use Scalar::Util qw(looks_like_number);
 
+use MooX::Types::MooseLike;
 use MooX::Types::MooseLike::Base qw(Int);
 
 use base qw(Exporter);
@@ -27,8 +31,5 @@ die "Unexpected sanity-check failure: $@" if $@ or not $av;
 $av = is_MediumInteger(0);
 die "Unexpected sanity-check success" if $av;
 
-#use Data::Dumper; print Dumper \%MooXTypesMooseLikeTypeLib::;
-#print Dumper \@EXPORT_OK;
-
-$EXPORT_TAGS{all} = [@EXPORT_OK];
+$EXPORT_TAGS{all} = [@EXPORT, @EXPORT_OK];
 1;

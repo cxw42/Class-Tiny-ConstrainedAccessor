@@ -1,5 +1,8 @@
 #!perl
-package SampleTypeTiny;
+package MY::Class::TypeTiny;
+use 5.006;
+use strict;
+use warnings;
 use Scalar::Util qw(looks_like_number);
 
 use Type::Tiny;
