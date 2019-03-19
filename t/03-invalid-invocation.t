@@ -11,11 +11,12 @@ require Class::Tiny::ConstrainedAccessor;
 {
     package SuperSimpleConstraint;
     use Class::Tiny { dummy => 0xdeadbeef };
-    sub assert_valid { 1 }
+    sub check { 1 }
 }
 my $constraint = SuperSimpleConstraint->new;
 
-# An object that does not support assert_valid
+# An object that does not support check() or any of the other assertion
+# routines we know how to use.
 {
     package NotAConstraint;
     use Class::Tiny { dummy => 0xdeadbeef };

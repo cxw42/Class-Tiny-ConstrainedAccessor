@@ -5,9 +5,7 @@ use strict;
 use warnings;
 use Class::Tiny;
 
-#use Data::Dumper;   #DEBUG
-
-our $VERSION = '0.000002'; # TRIAL
+our $VERSION = '0.000003';
 
 # Docs {{{1
 
@@ -21,7 +19,8 @@ L<Class::Tiny> uses custom accessors if they are defined before the
 C<use Class::Tiny> statement in a package.  This module creates custom
 accessors that behave as standard C<Class::Tiny> accessors except that
 they apply type constraints (C<isa> relationships).  Type constraints
-can come from TODO (e.g., L<Type::Tiny>).
+can come from L<Type::Tiny>, L<MooseX::Types>, L<MooX::Types::MooseLike>,
+L<MouseX::Types>, or L<Specio>.
 
 Example of a class using this package:
 
@@ -30,17 +29,21 @@ Example of a class using this package:
 
     use Type::Tiny;
 
-    my $MediumInteger = Type::Tiny->new(
-        name => 'MediumInteger',
-        constraint => sub { looks_like_number($_) and $_ >= 10 and $_ < 20 }
-    );
+    my $MediumInteger;
+    BEGIN {
+        # Create the type constraint
+        $MediumInteger = Type::Tiny->new(
+            name => 'MediumInteger',
+            constraint => sub { looks_like_number($_) and $_ >= 10 and $_ < 20 }
+        );
+    }
 
     use Class::Tiny::ConstrainedAccessor {
         medint => $MediumInteger,           # create accessor sub medint()
         med_with_default => $MediumInteger,
     };
 
-    # After using ConstrainedAccessor
+    # After using ConstrainedAccessor, actually define the class attributes.
     use Class::Tiny qw(medint regular), {
         med_with_default => 12,
     };
@@ -65,7 +68,6 @@ sub import {
     foreach my $k (keys(%constraints)) {
         my $constraint = $constraints{$k};
 
-        #use Data::Dumper; print Dumper({$k => $constraint});
         my ($checker, $get_message) =
                 _get_constraint_sub($constraint); # dies on failure
 
@@ -74,20 +76,17 @@ sub import {
         #   Future TODO? use an accessor that is specific to the type of
         #   constraint object we have?
         my $accessor = sub {
-            #print "Running accessor for $k\n"; # DEBUG
             my $self_ = shift;
-            if (@_) {
+            if (@_) {                               # Set
                 $checker->($_[0]) or die $get_message->($_[0]);
                 return $self_->{$k} = $_[0];
 
-            } elsif ( exists $self_->{$k} ) {
+            } elsif ( exists $self_->{$k} ) {       # Get
                 return $self_->{$k};
 
-            } else {
+            } else {                                # Get default
                 my $defaults_ =
                     Class::Tiny->get_all_attribute_defaults_for( ref $self_ );
-                #print "# Defaults for $k in " . ref($self_) . ":\n"; # DEBUG
-                #use Data::Dumper; my $x = Dumper($defaults_); $x =~ s/^/# /gm; print $x;  # DEBUG
 
                 my $def_ = $defaults_->{$k};
                 $def_ = $def_->() if ref $def_ eq 'CODE';
@@ -100,7 +99,6 @@ sub import {
         { # Install the accessor
             no strict 'refs';
             my $dest = $target . '::' . $k;
-            #print "Installing into $dest\n";   # DEBUG
             *{ $dest } = $accessor;
         }
 
@@ -116,14 +114,12 @@ sub _get_constraint_sub {
     DONE: {
 
         if ( eval { $type->can('compiled_check') }) { # Type::Tiny
-            #print "Type::Tiny\n";
             $checker = $type->compiled_check();
             $get_message = sub { $type->get_message($_[0]) };
             last DONE;
         }
 
         if (my $method = eval { $type->can('inline_check') || $type->can('_inline_check') }) { # Moose
-            #print "Moose\n";
             $checker = eval { eval sprintf 'sub { my $value = shift; %s }', $type->$method('$value') };
                 # Note: will fail if type cannot be inlined
             $get_message = sub { 'Constraint failed' };     # TODO
@@ -131,28 +127,28 @@ sub _get_constraint_sub {
         }
 
         if (eval { $type->can('check') } ) { # Moose, Mouse
-            #print("Moose, Mouse\n");
             $checker = sub { $type->check(@_) };
             $get_message = sub { 'Constraint failed' };     # TODO
             last DONE;
         }
 
         if (ref($type) eq 'CODE') { # MooX::Types
-            #print "Moo";
             $checker = sub { eval { $type->(@_); 1 } };
             $get_message = sub { 'Constraint failed' };     # TODO
             last DONE;
         }
 
         if(eval { $type->can('value_is_valid') }) { # Specio::Constraint::Simple
-            print("Specio");
             $checker = sub { $type->value_is_valid(@_) };
             $get_message = sub { 'Value is not a ' . $type->description };
             last DONE;
         }
 
     } #DONE
-    die "Dunno how to use this type" unless $checker and $get_message;
+
+    die "I don't know how to use this type (" . (ref($type)||'scalar') . ")"
+        unless $checker and $get_message;
+
     return ($checker, $get_message);
 } #_get_constraint_sub()
 
@@ -162,7 +158,8 @@ __END__
 
 =head1 AUTHOR
 
-Christopher White, C<< <cxwembedded at gmail.com> >>
+Christopher White, C<< <cxwembedded at gmail.com> >>.  Thanks to
+Toby Inkster for code contributions.
 
 =head1 BUGS
 

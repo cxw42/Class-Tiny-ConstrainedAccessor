@@ -1,5 +1,8 @@
 Revision history for Class-Tiny-ConstrainedAccessor
 
+0.000003    2019-03-19
+        - Updated documentation.  First non-TRIAL release.
+
 0.000002    2019-03-17
         - Support other type systems (GH-1).  Thanks to TOBYINK for code.
         - Constraint-check default values (GH-3).

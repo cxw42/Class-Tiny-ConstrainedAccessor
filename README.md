@@ -8,7 +8,8 @@
 `use Class::Tiny` statement in a package.  This module creates custom
 accessors that behave as standard `Class::Tiny` accessors except that
 they apply type constraints (`isa` relationships).  Type constraints
-can come from TODO (e.g., [Type::Tiny](https://metacpan.org/pod/Type::Tiny)).
+can come from [Type::Tiny](https://metacpan.org/pod/Type::Tiny), [MooseX::Types](https://metacpan.org/pod/MooseX::Types), [MooX::Types::MooseLike](https://metacpan.org/pod/MooX::Types::MooseLike),
+[MouseX::Types](https://metacpan.org/pod/MouseX::Types), or [Specio](https://metacpan.org/pod/Specio).
 
 Example of a class using this package:
 
@@ -17,24 +18,29 @@ Example of a class using this package:
 
     use Type::Tiny;
 
-    my $MediumInteger = Type::Tiny->new(
-        name => 'MediumInteger',
-        constraint => sub { looks_like_number($_) and $_ >= 10 and $_ < 20 }
-    );
+    my $MediumInteger;
+    BEGIN {
+        # Create the type constraint
+        $MediumInteger = Type::Tiny->new(
+            name => 'MediumInteger',
+            constraint => sub { looks_like_number($_) and $_ >= 10 and $_ < 20 }
+        );
+    }
 
     use Class::Tiny::ConstrainedAccessor {
         medint => $MediumInteger,           # create accessor sub medint()
         med_with_default => $MediumInteger,
     };
 
-    # After using ConstrainedAccessor
+    # After using ConstrainedAccessor, actually define the class attributes.
     use Class::Tiny qw(medint regular), {
         med_with_default => 12,
     };
 
 # AUTHOR
 
-Christopher White, `<cxwembedded at gmail.com>`
+Christopher White, `<cxwembedded at gmail.com>`.  Thanks to
+Toby Inkster for code contributions.
 
 # BUGS
 
