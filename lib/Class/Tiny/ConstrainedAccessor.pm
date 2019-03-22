@@ -100,12 +100,14 @@ sub import {
     } #foreach constraint
 
     # --- Make BUILD ---
-    my $has_build = do { no strict 'refs'; *{ "$target\::BUILD" }{CODE} };
-    my $build = _make_build(%accessors);
-    {
-        no strict 'refs';
-        *{ $has_build ? "$target\::_check_all_constraints" :
-                        "$target\::BUILD" } = $build;
+    unless($opts{NOBUILD}) {
+        my $has_build = do { no strict 'refs'; *{ "$target\::BUILD" }{CODE} };
+        my $build = _make_build(%accessors);
+        {
+            no strict 'refs';
+            *{ $has_build ? "$target\::_check_all_constraints" :
+                            "$target\::BUILD" } = $build;
+        }
     }
 
 } #import()
