@@ -1,5 +1,12 @@
 Revision history for Class-Tiny-ConstrainedAccessor
 
+0.000005    2019-??-??
+        - See changes for v0.000004, including checking constructor parameters.
+
+0.000004    2019-03-22
+        - Check constructor parameters (GH-4)
+        - Add option to suppress BUILD generation (GH-5)
+
 0.000003    2019-03-19
         - Updated documentation.  First non-TRIAL release.
 
