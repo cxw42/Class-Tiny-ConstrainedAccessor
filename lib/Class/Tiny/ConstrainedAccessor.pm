@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Class::Tiny;
 
-our $VERSION = '0.000003';
+our $VERSION = '0.000004';
 
 # Docs {{{1
 
@@ -67,6 +67,27 @@ one doesn't exist.  If one does exist, it creates the same function as
 C<_check_all_constraints> so that you can call it from your own BUILD.  It
 takes the same parameters as C<BUILD>.
 
+=head1 OPTIONS
+
+Remember, options are carried in an B<arrayref>.  This is to leave room
+for someday carrying attributes and constraints in a hashref.
+
+=over
+
+=item NOBUILD
+
+If C<< NOBUILD => 1 >> is given, the constructor-parameter-checker
+is created as C<_check_all_constraints> regardless of whether C<BUILD()>
+exists or not.  Example:
+
+    package MyClass;
+    use Class::Tiny::ConstrainedAccessor
+        [NOBUILD => 1],
+        foo => SomeConstraint;
+
+
+=back
+
 =cut
 
 # }}}1
@@ -100,14 +121,14 @@ sub import {
     } #foreach constraint
 
     # --- Make BUILD ---
-    unless($opts{NOBUILD}) {
-        my $has_build = do { no strict 'refs'; *{ "$target\::BUILD" }{CODE} };
-        my $build = _make_build(%accessors);
-        {
-            no strict 'refs';
-            *{ $has_build ? "$target\::_check_all_constraints" :
-                            "$target\::BUILD" } = $build;
-        }
+    my $has_build =
+        do { no warnings 'once'; no strict 'refs'; *{"$target\::BUILD"}{CODE} }
+        || $opts{NOBUILD};  # NOBUILD => pretend BUILD() already exists.
+    my $build = _make_build(%accessors);
+    {
+        no strict 'refs';
+        *{ $has_build ? "$target\::_check_all_constraints" :
+                        "$target\::BUILD" } = $build;
     }
 
 } #import()
