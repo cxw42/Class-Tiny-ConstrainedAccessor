@@ -75,26 +75,7 @@ sub import {
         # the source for C::T::__gen_accessor() and C::T::__gen_sub_body().
         #   Future TODO? use an accessor that is specific to the type of
         #   constraint object we have?
-        my $accessor = sub {
-            my $self_ = shift;
-            if (@_) {                               # Set
-                $checker->($_[0]) or die $get_message->($_[0]);
-                return $self_->{$k} = $_[0];
-
-            } elsif ( exists $self_->{$k} ) {       # Get
-                return $self_->{$k};
-
-            } else {                                # Get default
-                my $defaults_ =
-                    Class::Tiny->get_all_attribute_defaults_for( ref $self_ );
-
-                my $def_ = $defaults_->{$k};
-                $def_ = $def_->() if ref $def_ eq 'CODE';
-
-                $checker->($def_) or die $get_message->($def_);
-                return $self_->{$k} = $def_;
-            }
-        }; #accessor()
+        my $accessor = _make_accessor($k, $checker, $get_message);
 
         { # Install the accessor
             no strict 'refs';
@@ -152,6 +133,30 @@ sub _get_constraint_sub {
     return ($checker, $get_message);
 } #_get_constraint_sub()
 
+# _make_accessor($name, \&checker, \&get_message): Make an accessor.
+sub _make_accessor {
+    my ($k, $checker, $get_message) = @_;
+    return sub {
+        my $self_ = shift;
+        if (@_) {                               # Set
+            $checker->($_[0]) or die $get_message->($_[0]);
+            return $self_->{$k} = $_[0];
+
+        } elsif ( exists $self_->{$k} ) {       # Get
+            return $self_->{$k};
+
+        } else {                                # Get default
+            my $defaults_ =
+                Class::Tiny->get_all_attribute_defaults_for( ref $self_ );
+
+            my $def_ = $defaults_->{$k};
+            $def_ = $def_->() if ref $def_ eq 'CODE';
+
+            $checker->($def_) or die $get_message->($def_);
+            return $self_->{$k} = $def_;
+        }
+    }; #accessor()
+} #_make_accessor()
 1; # End of Class::Tiny::ConstrainedAccessor
 # Rest of the docs {{{1
 __END__
