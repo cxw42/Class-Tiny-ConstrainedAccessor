@@ -1,7 +1,8 @@
 Revision history for Class-Tiny-ConstrainedAccessor
 
-0.000005    2019-??-??
+0.000005    2019-03-24  TRIAL
         - See changes for v0.000004, including checking constructor parameters.
+        - Fix tests to run on <5.010
 
 0.000004    2019-03-22
         - Check constructor parameters (GH-4)
