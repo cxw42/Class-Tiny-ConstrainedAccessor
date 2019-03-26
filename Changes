@@ -1,6 +1,12 @@
 Revision history for Class-Tiny-ConstrainedAccessor
 
-0.000005    2019-03-24  TRIAL
+0.000006    2019-03-26
+        - No changes from 0.000005 trial release.
+        - Compared to v0.000003, the package now checks constructor
+          parameters and passes tests on all supported Perl versions.
+
+0.000005    2019-03-24
+        - Trial release
         - See changes for v0.000004, including checking constructor parameters.
         - Fix tests to run on <5.010
 
