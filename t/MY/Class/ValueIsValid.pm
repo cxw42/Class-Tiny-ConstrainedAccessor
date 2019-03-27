@@ -1,17 +1,15 @@
 #!perl
-package MY::Class::Specio;
+package MY::Class::ValueIsValid;
 use 5.006;
 use strict;
 use warnings;
 
-use Type::Tiny;
-
-use MY::TypeLib::Specio;
+use MY::TypeLib::ValueIsValid;
 
 use Class::Tiny::ConstrainedAccessor
-    medint => t('MediumInteger'),
-    med_with_default => t('MediumIntegerInline'),   # for coverage
-    lazy_default => t('MediumInteger'),
+    medint => $MediumInteger,
+    med_with_default => $MediumInteger,
+    lazy_default => $MediumInteger,
 ;
 
 # After using ConstrainedAccessor, we use this
