@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Class::Tiny;
 
-our $VERSION = '0.000007';
+our $VERSION = '0.000008';
 
 # Docs {{{1
 
