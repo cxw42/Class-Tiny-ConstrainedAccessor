@@ -52,7 +52,8 @@ blib/
 inc/
 .lwpcookies
 .last_cover_stats
-nytprof.out
+nytprof.out*
+nytprof/
 pod2htm*.tmp
 pm_to_blib
 Class-Tiny-ConstrainedAccessor-*

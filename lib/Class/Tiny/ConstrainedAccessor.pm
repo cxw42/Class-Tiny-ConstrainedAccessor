@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Class::Tiny;
 
-our $VERSION = '0.000008';
+our $VERSION = '0.000009'; # TRIAL
 
 # Docs {{{1
 
@@ -171,13 +171,16 @@ sub _get_constraint_sub {
             last DONE if $checker;
         }
 
-        if (eval { $type->can('check') } ) { # Moose, Mouse
-            $checker = sub { $type->check(@_) };
+        if (my $method = eval { $type->can('check') } ) { # Moose, Mouse
+            $checker = sub { unshift @_, $type; goto &$method; };
+                # Like $type->check(@_), but profiles as much faster on my
+                # test system.
             last DONE;
         }
 
-        if (ref($type) eq 'CODE') { # MooX::Types
+        if (ref($type) eq 'CODE') { # MooX::Types::MooseLike
             $checker = sub { eval { $type->(@_); 1 } };
+                # In profiling, seems to be about on par with `&$type;`.
             last DONE;
         }
 
