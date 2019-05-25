@@ -1,5 +1,8 @@
 Revision history for Class-Tiny-ConstrainedAccessor
 
+0.000010    2019-05-25
+        - Non-trial release of 0.000009
+
 0.000009    2019-05-25 (TRIAL VERSION)
         - Added custom-constraint support.  This way you can use constraints
           without needing a type system.

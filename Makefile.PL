@@ -156,7 +156,7 @@ EOT
 # Main options for EUMM
 my %opts = (
     NAME             => 'Class::Tiny::ConstrainedAccessor',
-    AUTHOR           => q{Christopher White <cxwembedded@gmail.com>},
+    AUTHOR           => q{Christopher White <cxw@cpan.org>},
     VERSION_FROM     => $VERSION_FROM,
     ABSTRACT_FROM    => $VERSION_FROM,
     LICENSE          => 'apache_2_0',
