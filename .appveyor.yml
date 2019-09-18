@@ -14,9 +14,6 @@ image:
 # no install; it's platform-specific
 
 build_script:
-  - cpanm https://github.com/cxw42/Perl-vars-i/releases/download/v2.000000/vars-i-2.000000.tar.gz
-    # Temporary, so I can run the test before vars::i 2.000000 is indexed.
-    # TODO remove this at the next commit.
   - cpanm --installdeps --notest --verbose .
   - perl Makefile.PL
   - cmd: gmake
