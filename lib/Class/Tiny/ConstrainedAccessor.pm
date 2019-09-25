@@ -23,6 +23,7 @@ can come from L<Type::Tiny>, L<MooseX::Types>, L<MooX::Types::MooseLike>,
 L<MouseX::Types>, or L<Specio>.  Alternatively, constraints can be applied
 using the technique described in
 L<"Constraints without a type system"|/CONSTRAINTS WITHOUT A TYPE SYSTEM>.
+Constraints can be passed as a B<hash> or a B<hasref>.
 
 Example of a class using this package:
 
@@ -73,9 +74,15 @@ for optimization than general-purpose type systems.
 
 Creates the accessors you have requested.  Basic usage:
 
+    # constraints are passed as a hash
     use Class::Tiny::ConstrainedAccessor
         name => constraint
         [, name => constraint ...]; # ... any number of name=>constraint pairs
+
+    # constraints are passed as a hashref
+    use Class::Tiny::ConstrainedAccessor {
+        name => constraint,
+    }
 
 This also creates a L<BUILD()|Class::Tiny/BUILD> subroutine to check the
 constructor parameters, if a C<BUILD()> doesn't already exist.
@@ -123,9 +130,14 @@ sub import {
     my %opts = ();
     %opts = @{+shift} if ref $_[0] eq 'ARRAY';
 
-    die "Need 'name => \$Constraint' pairs" if @_%2;
-
-    my %constraints = @_;
+    my %constraints;
+    # Both hashref and hash are supported for constraints
+    if (ref $_[0] eq 'HASH' && scalar @_ == 1) {
+        %constraints = %{$_[0]};
+    } else {
+        die "Need 'name => \$Constraint' pairs" if @_%2;
+        %constraints = @_;
+    }
 
     # --- Make the accessors ---
     my %accessors;  # constraint => [checker, get_message]
