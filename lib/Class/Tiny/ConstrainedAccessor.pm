@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Class::Tiny;
 
-our $VERSION = '0.000012';
+our $VERSION = '0.000013';
 
 # Docs {{{1
 
@@ -23,7 +23,6 @@ can come from L<Type::Tiny>, L<MooseX::Types>, L<MooX::Types::MooseLike>,
 L<MouseX::Types>, or L<Specio>.  Alternatively, constraints can be applied
 using the technique described in
 L<"Constraints without a type system"|/CONSTRAINTS WITHOUT A TYPE SYSTEM>.
-Constraints can be passed as a B<hash> or a B<hasref>.
 
 Example of a class using this package:
 
@@ -72,17 +71,19 @@ for optimization than general-purpose type systems.
 
 =head2 import
 
-Creates the accessors you have requested.  Basic usage:
+Creates the accessors you have requested.  Constraints can be passed as a list
+or hashref of variable/constraint pairs.  Basic usage:
 
-    # constraints are passed as a hash
+    # Constraints are passed as a list of pairs
     use Class::Tiny::ConstrainedAccessor
         name => constraint
-        [, name => constraint ...]; # ... any number of name=>constraint pairs
+        [, name2 => constraint ...]; # ... any number of name=>constraint pairs
 
-    # constraints are passed as a hashref
+    # Constraints are passed as a hashref
     use Class::Tiny::ConstrainedAccessor {
         name => constraint,
-    }
+        [, name2 => constraint ...]; # ... any number of name=>constraint pairs
+    };
 
 This also creates a L<BUILD()|Class::Tiny/BUILD> subroutine to check the
 constructor parameters, if a C<BUILD()> doesn't already exist.
@@ -95,8 +96,8 @@ own C<BUILD()> if you want to.
 =head1 OPTIONS
 
 To specify options, pass an B<arrayref> as the first argument on the `use`
-line.  This is to leave room for someday carrying attributes and constraints in
-a hashref.  For example:
+line.  This is because a hashref carries attributes and constraints.
+For example:
 
     use Class::Tiny::ConstrainedAccessor [ OPTION=>value ],
         name => constraint ...;
@@ -131,7 +132,6 @@ sub import {
     %opts = @{+shift} if ref $_[0] eq 'ARRAY';
 
     my %constraints;
-    # Both hashref and hash are supported for constraints
     if (ref $_[0] eq 'HASH' && scalar @_ == 1) {
         %constraints = %{$_[0]};
     } else {
@@ -292,7 +292,7 @@ __END__
 =head1 AUTHORS
 
 Created by Christopher White, C<< <cxwembedded at gmail.com> >>.  Thanks to
-Toby Inkster for code contributions.
+Toby Inkster (TOBYINK) and Ivan Butorin (FISHBONE) for code contributions.
 
 =head1 BUGS
 
@@ -315,15 +315,15 @@ You can also look for information at:
 
 L<https://github.com/cxw42/Class-Tiny-ConstrainedAccessor>
 
-=item * Search CPAN
+=item * MetaCPAN
 
-L<https://metacpan.org/release/Class-Tiny-ConstrainedAccessor>
+L<https://metacpan.org/pod/Class::Tiny::ConstrainedAccessor>
 
 =back
 
 =head1 LICENSE
 
-Copyright 2019 Christopher White.
+Copyright 2019 Christopher White and contributors.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Apache License (2.0). You may obtain a
@@ -338,5 +338,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =cut
+
 # }}}1
 # vi: set fdm=marker:

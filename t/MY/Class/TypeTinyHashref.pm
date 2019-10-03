@@ -12,7 +12,7 @@ use vars::i '$MediumInteger' => Type::Tiny->new(
         constraint => sub { looks_like_number($_) and $_ >= 10 and $_ < 20 }
     );
 
-# Pass constraints in form of a hashref
+# Pass constraints in a hashref
 use Class::Tiny::ConstrainedAccessor {
     medint => $MediumInteger,           # create accessor sub medint()
     med_with_default => $MediumInteger,
