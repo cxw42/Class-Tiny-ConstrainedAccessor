@@ -233,6 +233,7 @@ my %opts = (
                     'MooX::Types::MooseLike' => '0',
                     'MouseX::Types' => '0',
                     'Specio' => '0',
+                    'Type::Nano' => '0.004',
                 },
             },
         },
