@@ -1,5 +1,8 @@
 Revision history for Class-Tiny-ConstrainedAccessor
 
+0.000014    ??
+        - Bump minimum Perl from 5.6 to 5.6.1 (for Types::TypeTiny)
+
 0.000013    2019-10-02
         - Arguments can now be provided in a hashref (#7).
           Thanks to FISHBONE for code.

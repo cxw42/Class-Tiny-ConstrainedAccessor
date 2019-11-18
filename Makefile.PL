@@ -161,7 +161,7 @@ my %opts = (
     ABSTRACT_FROM    => $VERSION_FROM,
     LICENSE          => 'apache_2_0',
     PL_FILES         => {},
-    MIN_PERL_VERSION => '5.006',
+    MIN_PERL_VERSION => '5.006001',
 
     # In the following, if a specific version is listed, but no explanation
     # is given, that means we want that version for bugfixes it includes.

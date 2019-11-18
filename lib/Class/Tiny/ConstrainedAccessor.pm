@@ -285,6 +285,24 @@ sub _make_build {
     } #BUILD()
 } #_make_build()
 
+############################################################################
+# A package to bless custom constraints ([\&check, \&get_message]) into
+{
+package # hide from PAUSE
+    Class::Tiny::ConstrainedAccessor::CustomConstraint;
+
+sub check {
+    my ($self, $value) = @_;
+    $self->[0]->($value);
+}
+
+sub get_message {
+    my ($self, $value) = @_;
+    $self->[1]->($value);
+}
+
+} # end of package ...::CustomConstraint
+
 1; # End of Class::Tiny::ConstrainedAccessor
 # Rest of the docs {{{1
 __END__
