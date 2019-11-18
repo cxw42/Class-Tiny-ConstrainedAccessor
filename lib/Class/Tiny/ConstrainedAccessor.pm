@@ -4,8 +4,9 @@ use 5.006;
 use strict;
 use warnings;
 use Class::Tiny;
+use Types::TypeTiny ();
 
-our $VERSION = '0.000013';
+our $VERSION = '0.000014';      # TRIAL
 
 # Docs {{{1
 
@@ -174,16 +175,6 @@ sub import {
 # Returns two coderefs: checker and get_message.
 sub _get_constraint_sub {
     my ($type_name, $type) = @_;
-    my ($checker, $get_message);
-
-    # Handle the custom-constraint format
-    if(ref $type eq 'ARRAY') {
-        die "Custom constraint $type_name must have two elements: checker, get_message"
-            unless scalar @$type == 2;
-        die "$type_name: checker must be a subroutine" unless ref($type->[0]) eq 'CODE';
-        die "$type_name: get_message must be a subroutine" unless ref($type->[1]) eq 'CODE';
-        return @$type;
-    }
 
     # Get type's name, if any
     my $name = eval { $type->can('name') || $type->can('description') };
@@ -191,54 +182,57 @@ sub _get_constraint_sub {
 
     # Set default message
     $name = $type_name unless $name;
-    $get_message = sub { "Value is not a $name" };
+    my $default_get_message = sub { "Value is not a $name" };
 
-    # Try the different types of constraints we know about
-    DONE: {
+    # Handle the custom-constraint format
+    if(ref $type eq 'ARRAY') {
+        die "Custom constraint $type_name must have two elements: checker, get_message"
+            unless scalar @$type == 2;
+        die "$type_name: checker must be a subroutine" unless ref($type->[0]) eq 'CODE';
+        die "$type_name: get_message must be a subroutine" unless ref($type->[1]) eq 'CODE';
+        $type = bless [@$type], 'Class::Tiny::ConstrainedAccessor::CustomConstraint';
+        return @$type;
+    }
 
-        if (ref($type) eq 'CODE') { # MooX::Types::MooseLike
-            $checker = sub { eval { $type->(@_); 1 } };
-                # In profiling, seems to be about on par with `&$type;`.
-            last DONE;
-        }
+    # Handle Specio::Constraint::Simple, which Types::TypeTiny::to_TypeTiny()
+    # does not (https://rt.cpan.org/Ticket/Display.html?id=131011)
 
-        die "I don't know how to handle non-reference constraint $type_name"
-            unless ref $type;   # All the rest of the checks use $type->can()
+    if( (ref $type eq 'Specio::Constraint::Simple') ||
+        eval { $type->can('value_is_valid') } ) {
+            $type_name = eval { $type->name } || $type_name;
+            return (
+                sub { $type->value_is_valid(@_) },
+                $default_get_message
+            );
+    }
 
-        if ( my $method = eval { $type->can('compiled_check') }) { # Type::Tiny
-            $checker = $type->$method();
-            $get_message = sub { $type->get_message($_[0]) };
-            last DONE;
-        }
+    # Handle MooX::Types::MooseLike as well as other types of coderef.
+    # A $orig_coderef may indicate failure by dying or returning 0 ---
+    # there's no way to know.  We assume that:
+    #   - Express undef is success (e.g., MooX::Types::MooseLike)
+    #   - die() is failure (ditto)
+    #   - Returning a defined value is a success/failure indication
+    #     (as expected by Types::TypeTiny::to_TypeTiny(\&)).
+    if(ref $type eq 'CODE') {
+        my $orig_coderef = $type;
+        my $new_type = sub {
+            local $@;
+            my $is_ok = eval { $orig_coderef->(@_) };
+            if($@) {
+                $is_ok = 0;                     # die() => failure
+            } elsif(!defined $is_ok) {
+                $is_ok = 1;                     # undef => success
+            }
+            return $is_ok;
+        };
+        $type = $new_type;
+    }
 
-        if (my $method = eval { $type->can('inline_check') || $type->can('_inline_check') }) { # Specio::Constraint::Simple
-            $checker = eval {
-                my $text = $type->$method('$value');
-                    # $method() will fail if type cannot be inlined.
-                local $SIG{__WARN__} = sub { };     # Eval failure => silent
-                eval "sub { my \$value = shift; $text }"
-            };
-            last DONE if $checker;
-        }
+    my $impl = Types::TypeTiny::to_TypeTiny($type);
+    die "I couldn't understand the constraint for $type_name"
+        unless ref $impl eq 'Type::Tiny';
 
-        if (my $method = eval { $type->can('check') } ) { # Moose, Mouse
-            $checker = sub { unshift @_, $type; goto &$method; };
-                # Like $type->check(@_), but profiles as much faster on my
-                # test system.
-            last DONE;
-        }
-
-        if(eval { $type->can('value_is_valid') }) { # Specio::Constraint::Simple
-            $checker = sub { $type->value_is_valid(@_) };
-            last DONE;
-        }
-
-    } #DONE
-
-    die "$type_name: I don't know how to use type " . ref($type)
-        unless $checker;
-
-    return ($checker, $get_message);
+    return ( $impl->compiled_check(), sub { $impl->get_message($_[0]) } );
 } #_get_constraint_sub()
 
 # _make_accessor($name, \&checker, \&get_message): Make an accessor.
@@ -288,8 +282,7 @@ sub _make_build {
 ############################################################################
 # A package to bless custom constraints ([\&check, \&get_message]) into
 {
-package # hide from PAUSE
-    Class::Tiny::ConstrainedAccessor::CustomConstraint;
+package Class::Tiny::ConstrainedAccessor::CustomConstraint;
 
 sub check {
     my ($self, $value) = @_;

@@ -187,7 +187,7 @@ my %opts = (
         # Type systems we always check.  Others are below (test recommends).
         'MooseX::Types' => '0',
         'MooseX::Types::Moose' => '0',
-        'Type::Tiny' => '0',
+        'Type::Tiny' => '1.004004',
         'vars::i' => '2.000000',    # See #6
     },
     PREREQ_PM => {
