@@ -190,24 +190,11 @@ sub _get_constraint_sub {
             unless scalar @$type == 2;
         die "$type_name: checker must be a subroutine" unless ref($type->[0]) eq 'CODE';
         die "$type_name: get_message must be a subroutine" unless ref($type->[1]) eq 'CODE';
-        $type = bless [@$type], 'Class::Tiny::ConstrainedAccessor::CustomConstraint';
         return @$type;
     }
 
-    # Handle Specio::Constraint::Simple, which Types::TypeTiny::to_TypeTiny()
-    # does not (https://rt.cpan.org/Ticket/Display.html?id=131011)
-
-    if( (ref $type eq 'Specio::Constraint::Simple') ||
-        eval { $type->can('value_is_valid') } ) {
-            $type_name = eval { $type->name } || $type_name;
-            return (
-                sub { $type->value_is_valid(@_) },
-                $default_get_message
-            );
-    }
-
     # Handle MooX::Types::MooseLike as well as other types of coderef.
-    # A $orig_coderef may indicate failure by dying or returning 0 ---
+    # $orig_coderef may indicate failure by dying or returning 0 ---
     # there's no way to know.  We assume that:
     #   - Express undef is success (e.g., MooX::Types::MooseLike)
     #   - die() is failure (ditto)
@@ -278,23 +265,6 @@ sub _make_build {
         }
     } #BUILD()
 } #_make_build()
-
-############################################################################
-# A package to bless custom constraints ([\&check, \&get_message]) into
-{
-package Class::Tiny::ConstrainedAccessor::CustomConstraint;
-
-sub check {
-    my ($self, $value) = @_;
-    $self->[0]->($value);
-}
-
-sub get_message {
-    my ($self, $value) = @_;
-    $self->[1]->($value);
-}
-
-} # end of package ...::CustomConstraint
 
 1; # End of Class::Tiny::ConstrainedAccessor
 # Rest of the docs {{{1
