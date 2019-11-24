@@ -6,7 +6,7 @@ use warnings;
 use Class::Tiny;
 use Types::TypeTiny ();
 
-our $VERSION = '0.000014';      # TRIAL
+our $VERSION = '0.000015';
 
 # Docs {{{1
 
